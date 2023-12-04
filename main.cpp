@@ -1,3 +1,5 @@
+#include "authpage.h"
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -17,6 +19,12 @@ int main(int argc, char *argv[])
         },
         Qt::QueuedConnection);
     engine.load(url);
+    authpage *apage = new authpage(&app);
+   // chatpage *cpage = new chatpage(&app);
+    QQmlContext *context = engine.rootContext();
+
+    context->setContextProperty("authpage", apage);
+  //  context->setContextProperty("chatpage", cpage);
 
     return app.exec();
 }

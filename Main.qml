@@ -1,18 +1,31 @@
 import QtQuick
 import QtQuick.Controls
+import chat_app
 
-Window {
+ApplicationWindow {
+    visible: true
     width: 640
     height: 480
-    visible: true
-    title: qsTr("Hello World")
+    title: "Hello World"
 
-    AuthPage{
+    AuthPage {
         id: authPage
         anchors.fill: parent
-        visible: true
+
+
+    }
+    ChatPage{
+        id: chatPage
+        anchors.fill: parent
+        visible: false;
     }
 
+    Connections {
+                   target: authpage
+                   function onloginsuccesful(){
+                       chatPage.visible = true;
+                       authPage.visible = false;
+                   }
 
-
+               }
 }

@@ -4,7 +4,6 @@ import QtQuick.Controls 2.15
 Item {
     width: parent.width   // Ustaw szerokość na szerokość rodzica (czyli AuthPage w main.qml)
     height: parent.height  // Ustaw wysokość na wysokość rodzica
-    signal loginSuccessful
     Rectangle {
         width: parent.width
         height: parent.height

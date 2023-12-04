@@ -13,23 +13,23 @@
 #include <QUrlQuery>
 #include <QJsonDocument>
 #include <QByteArray>
+#include <QtQml>
 
 class authpage : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int logged_in READ logged_in WRITE setLogged_in NOTIFY logged_inChanged FINAL)
+    QML_ELEMENT
 public:
     explicit authpage(QObject *parent = nullptr);
     apiservice *apiService;
     QSettings settings;
     Q_INVOKABLE void login(QString username, QString password);
     Q_INVOKABLE void signup(QString username, QString password);
-    int logged_in;
     int logged_in() const;
 
 
 signals:
-    logged_inChanged();
+    void loginsuccesful();
 
 private:
     int m_logged_in;

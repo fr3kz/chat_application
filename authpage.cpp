@@ -6,11 +6,11 @@
 authpage::authpage(QObject *parent)
     : QObject{parent}, apiService(new apiservice(this)), settings("chat_app","chat_app")
 {
-    connect(this,&authpage.logged_inChanged,this,&authpage.logged_in);
+    connect(this, &authpage::loginsuccesful, this, &authpage::logged_in);
 }
+
 void authpage::login(QString username, QString password)
 {
-
     QJsonObject userdata;
     userdata["username"] = username;
     userdata["password"] = password;
@@ -20,17 +20,13 @@ void authpage::login(QString username, QString password)
     QJsonDocument response = apiService->post("http://127.0.0.1:8000/users/login/", userdatadoc.toJson());
     QJsonObject jobj = response.object();
 
-    if(jobj.contains("message_error") == false){
+    if(!jobj.contains("message_error")) {
+        settings.setValue("sessionid", jobj["message"].toString());
+        settings.setValue("userid", jobj["userid"].toString());
 
-
-        settings.setValue("sessionid",jobj["message"].toString());
-        settings.setValue("userid",jobj["userid"].toString());
-
-        //przeniesc do menu
-        emit logged_inChanged();
-
-
-    }else{
+        // przeniesc do menu
+        emit loginsuccesful();
+    } else {
         qDebug() << jobj["message_error"];
     }
 
@@ -48,17 +44,12 @@ void authpage::signup(QString username, QString password)
     QJsonDocument response = apiService->post("http://127.0.0.1:8000/users/register/", userdatadoc.toJson());
     QJsonObject jobj = response.object();
 
-    if(jobj.contains("message_error") == false){
+    if(!jobj.contains("message_error")) {
+        settings.setValue("sessionid", jobj["message"].toString());
+        settings.setValue("userid", jobj["userid"].toString());
 
-
-        settings.setValue("sessionid",jobj["message"].toString());
-        settings.setValue("userid",jobj["userid"].toString());
-
-        emit logged_inChanged();
-
-
-
-    }else{
+        emit loginsuccesful();
+    } else {
         qDebug() << jobj["message_error"];
     }
 
@@ -67,6 +58,6 @@ void authpage::signup(QString username, QString password)
 
 int authpage::logged_in() const
 {
-    m_logged_in = 1;
-    return m_logged_in;
+    // Tutaj można zwrócić rzeczywisty stan zalogowania, zamiast zawsze 1
+    return 1;
 }

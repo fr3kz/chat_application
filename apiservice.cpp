@@ -50,7 +50,7 @@ QJsonDocument apiservice::post_auth(QString url_,QByteArray data) {
     QUrl url(url_);
     QNetworkRequest request(url);
 
-    QSettings settings("firma","nienazwany1");
+    QSettings settings("chat_app","chat_app");
     QString sessid = settings.value("sessionid").toString();
     QNetworkCookie sessionCookie("sessionid", sessid.toUtf8());
     QList<QNetworkCookie> cookies;
@@ -93,7 +93,7 @@ QJsonDocument apiservice::get(QString url_) {
     QUrl url(url_);
     QNetworkRequest request(url);
 
-    QString csrf = "j5f2ZRbXPfWcXWUhIOqYTfcljIsAFVskBA6QomHKXEBnWG7gV6vughB8U7N2A1Xz";
+    QString csrf = get_csrf();
     QByteArray csrfbyte = csrf.toUtf8();
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -130,7 +130,7 @@ QJsonDocument apiservice::get(QString url_) {
 
 QJsonDocument apiservice::get_auth(QString url_) {
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    QSettings settings("firma","nienazwany1");
+    QSettings settings("chat_app","chat_app");
 
 
     QString sessid = settings.value("sessionid").toString();
@@ -179,7 +179,7 @@ QJsonDocument apiservice::get_auth(QString url_) {
 }
 
 QString apiservice::get_csrf() {
-    QString url_ = "http://127.0.0.1:8000/csrf/";
+    QString url_ = "http://127.0.0.1:8000/users/csrf/";
 
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
