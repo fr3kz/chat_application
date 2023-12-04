@@ -1,0 +1,72 @@
+#include "authpage.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
+
+authpage::authpage(QObject *parent)
+    : QObject{parent}, apiService(new apiservice(this)), settings("chat_app","chat_app")
+{
+    connect(this,&authpage.logged_inChanged,this,&authpage.logged_in);
+}
+void authpage::login(QString username, QString password)
+{
+
+    QJsonObject userdata;
+    userdata["username"] = username;
+    userdata["password"] = password;
+
+    QJsonDocument userdatadoc = QJsonDocument(userdata);
+
+    QJsonDocument response = apiService->post("http://127.0.0.1:8000/users/login/", userdatadoc.toJson());
+    QJsonObject jobj = response.object();
+
+    if(jobj.contains("message_error") == false){
+
+
+        settings.setValue("sessionid",jobj["message"].toString());
+        settings.setValue("userid",jobj["userid"].toString());
+
+        //przeniesc do menu
+        emit logged_inChanged();
+
+
+    }else{
+        qDebug() << jobj["message_error"];
+    }
+
+    qDebug() << response;
+}
+
+void authpage::signup(QString username, QString password)
+{
+    QJsonObject userdata;
+    userdata["username"] = username;
+    userdata["password"] = password;
+
+    QJsonDocument userdatadoc = QJsonDocument(userdata);
+
+    QJsonDocument response = apiService->post("http://127.0.0.1:8000/users/register/", userdatadoc.toJson());
+    QJsonObject jobj = response.object();
+
+    if(jobj.contains("message_error") == false){
+
+
+        settings.setValue("sessionid",jobj["message"].toString());
+        settings.setValue("userid",jobj["userid"].toString());
+
+        emit logged_inChanged();
+
+
+
+    }else{
+        qDebug() << jobj["message_error"];
+    }
+
+    qDebug() << response;
+}
+
+int authpage::logged_in() const
+{
+    m_logged_in = 1;
+    return m_logged_in;
+}
